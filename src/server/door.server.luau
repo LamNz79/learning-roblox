@@ -46,7 +46,7 @@ local DoorController = DoorControllerModule :: typeof(require(script.Parent.door
 local doorModel = workspace:WaitForChild("DoorModel")
 local doorPart = doorModel.PrimaryPart
 local doorHinge = doorModel:WaitForChild("doorHinge")
-local prompt = doorPart:WaitForChild("ProximityPrompt")
+local prompt = doorHinge:WaitForChild("ProximityPrompt")
 
 local CLOSED_ANGLE = 0
 local OPEN_ANGLE = 90
