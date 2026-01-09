@@ -19,6 +19,7 @@ local doorPart = doorModel.PrimaryPart
 local doorHinge = doorModel:WaitForChild("doorHinge")
 local prompt = doorHinge:WaitForChild("ProximityPrompt")
 
+local SMASH_FORCE = 100
 local CLOSED_ANGLE = 0
 local OPEN_ANGLE = 160
 local SPIN_EXTRA = 0
@@ -42,6 +43,11 @@ local controller = DoorController.new({
 	openCFrame = OPEN_ANGLE + SPIN_EXTRA,
 	tween = tween,
 })
+
+-- Connect the Touched event
+doorPart.Touched:Connect(function(otherPart)
+	controller:handleTouch(otherPart, doorHinge.Position, SMASH_FORCE)
+end)
 
 prompt.Triggered:Connect(function(player)
 	controller:toggle(player)
