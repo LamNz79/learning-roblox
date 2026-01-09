@@ -9,10 +9,10 @@ local DoorMathModule = require(Shared.Math:WaitForChild("doorMath"))
 local DoorTweenModule = require(Shared.Utils:WaitForChild("doorTween"))
 local DoorControllerModule = require(Server.Components:WaitForChild("doorController"))
 
-local DoorMath = DoorMathModule :: typeof(require(game.ReplicatedStorage.Shared.Math.DoorMath))
-local DoorTween = DoorTweenModule :: typeof(require(game.ReplicatedStorage.Shared.Math.DoorTween))
+local DoorMath = DoorMathModule :: typeof(require(game.ReplicatedStorage.Shared.Math.doorMath))
+local DoorTween = DoorTweenModule :: typeof(require(game.ReplicatedStorage.Shared.Utils.doorTween))
 local DoorController =
-	DoorControllerModule :: typeof(require(game.ServerScriptService.Server.Components.DoorController))
+	DoorControllerModule :: typeof(require(game.ServerScriptService.Server.Components.doorController))
 
 local doorModel = workspace:WaitForChild("DoorModel")
 local doorPart = doorModel.PrimaryPart
