@@ -49,8 +49,8 @@ local doorHinge = doorModel:WaitForChild("doorHinge")
 local prompt = doorHinge:WaitForChild("ProximityPrompt")
 
 local CLOSED_ANGLE = 0
-local OPEN_ANGLE = 90
-local SPIN_EXTRA = 360 -- 3 full spins (360 * 3)
+local OPEN_ANGLE = 160
+local SPIN_EXTRA = 0
 
 local originalCFrame = doorModel:GetPivot()
 local hingeCFrame = doorHinge.CFrame
@@ -63,7 +63,7 @@ local function updateDoor(angle)
 	doorPart:PivotTo(currentCFrame)
 end
 
-local tweenInfo = TweenInfo.new(1.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+local tweenInfo = TweenInfo.new(1.5, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out)
 
 -- 2. Create the tween, passing the Starting Angle (0) and the Update Function
 local tween = DoorTween.new(CLOSED_ANGLE, tweenInfo, updateDoor)
