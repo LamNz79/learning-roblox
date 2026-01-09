@@ -6,7 +6,6 @@ export type DoorControllerObject = {
 	handleTouch: (self: DoorControllerObject, otherPart: BasePart, hingePosition: Vector3, smashForce: number) -> (),
 	isAnimating: boolean,
 	isOpen: boolean,
-	isAnimating: boolean,
 	tween: DoorTween.DoorTweenObject,
 }
 
@@ -31,7 +30,7 @@ function DoorController:toggle(player)
 		self.tween.Completed:Once(function()
 			self.isAnimating = false
 		end)
-		print(player.Name .. " closed the door")
+		print(player.Name, " closed the door")
 	else
 		self.tween:play(self.openCFrame)
 		self.isOpen = true
@@ -39,7 +38,7 @@ function DoorController:toggle(player)
 			self.isAnimating = false
 		end)
 
-		print(player.Name .. " opened the door (SPIN!)")
+		print(player.Name, " opened the door (SPIN!)")
 	end
 end
 
