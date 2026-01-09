@@ -31,17 +31,21 @@
 -- 	end
 -- end)
 
-local DoorMathModule = require(script.Parent:WaitForChild("doorMath"))
-local DoorTweenModule = require(script.Parent:WaitForChild("doorTween"))
-local DoorControllerModule = require(script.Parent:WaitForChild("doorController"))
+--!strict
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerScriptService = game:GetService("ServerScriptService")
 
--- 2. "Cast" them to the types we exported above
--- Note: In Rojo/VSCode, you often have to access the type via the file path logic or just rely on the require if the extension is smart enough.
--- However, the most reliable way for `WaitForChild` (which returns 'Instance') is this:
+local Shared = ReplicatedStorage:WaitForChild("Shared")
+local Server = ServerScriptService:WaitForChild("Server")
 
-local DoorMath = DoorMathModule :: typeof(require(script.Parent.doorMath))
-local DoorTween = DoorTweenModule :: typeof(require(script.Parent.doorTween))
-local DoorController = DoorControllerModule :: typeof(require(script.Parent.doorController))
+local DoorMathModule = require(Shared.Math:WaitForChild("DoorMath"))
+local DoorTweenModule = require(Shared.Utils:WaitForChild("DoorTween"))
+local DoorControllerModule = require(Server.Components:WaitForChild("DoorController"))
+
+local DoorMath = DoorMathModule :: typeof(require(game.ReplicatedStorage.Shared.Math.DoorMath))
+local DoorTween = DoorTweenModule :: typeof(require(game.ReplicatedStorage.Shared.Math.DoorTween))
+local DoorController =
+	DoorControllerModule :: typeof(require(game.ServerScriptService.Server.Components.DoorController))
 
 local doorModel = workspace:WaitForChild("DoorModel")
 local doorPart = doorModel.PrimaryPart
@@ -57,22 +61,18 @@ local hingeCFrame = doorHinge.CFrame
 
 local pivotToHinge = DoorMath.computePivotToHinge(originalCFrame, hingeCFrame)
 
--- 1. Create a function that updates the door based on the current angle
-local function updateDoor(angle)
+local function updateDoor(angle: number)
 	local currentCFrame = DoorMath.getHingeCFrame(hingeCFrame, pivotToHinge, angle)
 	doorPart:PivotTo(currentCFrame)
 end
 
 local tweenInfo = TweenInfo.new(1.5, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out)
 
--- 2. Create the tween, passing the Starting Angle (0) and the Update Function
 local tween = DoorTween.new(CLOSED_ANGLE, tweenInfo, updateDoor)
 
--- 3. Pass the TARGET ANGLES (Numbers) to the controller instead of CFrames
--- The controller will pass these numbers to tween:play()
 local controller = DoorController.new({
-	closedCFrame = CLOSED_ANGLE, -- Passing 0
-	openCFrame = OPEN_ANGLE + SPIN_EXTRA, -- Passing 1170
+	closedCFrame = CLOSED_ANGLE,
+	openCFrame = OPEN_ANGLE + SPIN_EXTRA,
 	tween = tween,
 })
 
