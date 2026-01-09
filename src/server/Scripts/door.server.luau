@@ -38,9 +38,9 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Server = ServerScriptService:WaitForChild("Server")
 
-local DoorMathModule = require(Shared.Math:WaitForChild("DoorMath"))
-local DoorTweenModule = require(Shared.Utils:WaitForChild("DoorTween"))
-local DoorControllerModule = require(Server.Components:WaitForChild("DoorController"))
+local DoorMathModule = require(Shared.Math:WaitForChild("doorMath"))
+local DoorTweenModule = require(Shared.Utils:WaitForChild("doorTween"))
+local DoorControllerModule = require(Server.Components:WaitForChild("doorController"))
 
 local DoorMath = DoorMathModule :: typeof(require(game.ReplicatedStorage.Shared.Math.DoorMath))
 local DoorTween = DoorTweenModule :: typeof(require(game.ReplicatedStorage.Shared.Math.DoorTween))
