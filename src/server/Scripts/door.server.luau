@@ -16,7 +16,7 @@ local DoorController = DoorControllerModule :: typeof(require(game.ReplicatedSto
 local LockedDoorController =
 	LockedDoorControllerModule :: typeof(require(game.ServerScriptService.Server.Components.LockDoorController))
 
-local SMASH_FORCE = 100
+local SMASH_FORCE = 10
 local CLOSED_ANGLE = 0
 local OPEN_ANGLE = 160
 local SPIN_EXTRA = 0
@@ -76,33 +76,45 @@ local function setupDoor(doorModel: Model)
 end
 
 -- Set up both doors
-local normalDoorModel = workspace:WaitForChild("DoorModel")
+-- local normalDoorModel = workspace:WaitForChild("DoorModel")
 local lockedDoorModel = workspace:WaitForChild("LockedDoorModel")
-
-local normalDoorController = setupDoor(normalDoorModel)
+local bigRedButtonModel = workspace:WaitForChild("BigRedButton")
+local redButton = bigRedButtonModel:WaitForChild("Button")
+-- local normalDoorController = setupDoor(normalDoorModel)
 local lockedDoorController = setupDoor(lockedDoorModel)
+local buttonDebounce = false
 
--- Example: Unlock the locked door after 10 seconds
--- 1. Verify it's not nil first
 if lockedDoorController then
-	-- 2. Cast to the subclass type so Luau recognizes '.unlock'
+	redButton.Touched:Connect(function(otherPart)
+		local character = otherPart.Parent
+		if not character then
+			return
+		end
 
-	-- Now Luau knows 'unlock' is a valid key
-	if lockedDoorController.unlock then
-		task.delay(10, function()
+		local humanoid = character:FindFirstChildOfClass("Humanoid")
+		if not humanoid then
+			return
+		end
+
+		if buttonDebounce then
+			buttonDebounce = true
+			print("Button pressed by", character.Name)
+		end
+		if lockedDoorController.unlock and lockedDoorController.isLocked then
 			lockedDoorController:unlock()
-			print("LockedDoorModel has been unlocked!")
-		end)
-	end
+			print("Door is now UNLOCKED")
+		end
+
+		task.wait(1)
+		buttonDebounce = false
+	end)
 end
 
 -- Repeat the same logic for the normal door safely
-if normalDoorController then
-	-- We cast to 'any' here because we expect this might not be a LockedDoor
-
-	if normalDoorController.unlock then
-		task.delay(10, function()
-			normalDoorController:unlock()
-		end)
-	end
-end
+-- if normalDoorController then
+-- 	if normalDoorController.unlock then
+-- 		task.delay(10, function()
+-- 			normalDoorController:unlock()
+-- 		end)
+-- 	end
+-- end

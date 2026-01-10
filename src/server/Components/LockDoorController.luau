@@ -12,12 +12,11 @@ setmetatable(LockedDoor, DoorController)
 
 function LockedDoor.new(config): LockedDoorObject
 	local self = DoorController.new(config) :: any
+	self.isLocked = true
 
 	setmetatable(self, LockedDoor)
 
-	self.isLocked = true
-
-	return self :: LockedDoorObject
+	return (self :: any) :: LockedDoorObject
 end
 
 function LockedDoor:toggle(player: Player)
