@@ -5,6 +5,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Server = ServerScriptService:WaitForChild("Server")
 
+local ButtonController = require(ReplicatedStorage.Shared.Controllers.ButtonController)
 local DoorMathModule = require(Shared.Math:WaitForChild("doorMath"))
 local DoorTweenModule = require(Shared.Utils:WaitForChild("doorTween"))
 local DoorControllerModule = require(Shared.Controllers:WaitForChild("DoorController"))
@@ -24,10 +25,12 @@ local SPIN_EXTRA = 0
 -- Function to set up a door
 local function setupDoor(doorModel: Model)
 	local doorPart = doorModel.PrimaryPart
+
 	if not doorPart then
 		warn(`Model {doorModel.Name} is missing a PrimaryPart!`)
 		return nil
 	end
+
 	local doorHinge = doorModel:WaitForChild("doorHinge") :: BasePart
 	local prompt = doorHinge:WaitForChild("ProximityPrompt") :: ProximityPrompt
 	local isLocked = doorModel:GetAttribute("IsLocked") or false
@@ -44,8 +47,8 @@ local function setupDoor(doorModel: Model)
 
 	local tweenInfo = TweenInfo.new(1.5, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out)
 	local tween = DoorTween.new(CLOSED_ANGLE, tweenInfo, updateDoor)
-
 	local controller
+
 	if isLocked then
 		controller = LockedDoorController.new({
 			closedCFrame = CLOSED_ANGLE,
@@ -75,46 +78,55 @@ local function setupDoor(doorModel: Model)
 	return controller
 end
 
--- Set up both doors
--- local normalDoorModel = workspace:WaitForChild("DoorModel")
+local normalDoorModel = workspace:WaitForChild("DoorModel")
 local lockedDoorModel = workspace:WaitForChild("LockedDoorModel")
 local bigRedButtonModel = workspace:WaitForChild("BigRedButton")
 local redButton = bigRedButtonModel:WaitForChild("Button")
--- local normalDoorController = setupDoor(normalDoorModel)
+local normalDoorController = setupDoor(normalDoorModel)
+
 local lockedDoorController = setupDoor(lockedDoorModel)
+local myButton = ButtonController.new(bigRedButtonModel)
+
 local buttonDebounce = false
 
 if lockedDoorController then
 	redButton.Touched:Connect(function(otherPart)
 		local character = otherPart.Parent
-		if not character then
-			return
-		end
+		if character and character:IsA("Model") then
+			local humanoid = character:FindFirstChildOfClass("Humanoid")
+			local player = game.Players:GetPlayerFromCharacter(character)
 
-		local humanoid = character:FindFirstChildOfClass("Humanoid")
-		if not humanoid then
-			return
-		end
+			if not humanoid or not player then
+				return
+			end
 
-		if buttonDebounce then
-			buttonDebounce = true
-			print("Button pressed by", character.Name)
-		end
-		if lockedDoorController.unlock and lockedDoorController.isLocked then
-			lockedDoorController:unlock()
-			print("Door is now UNLOCKED")
-		end
+			if not buttonDebounce then
+				buttonDebounce = true
 
-		task.wait(1)
-		buttonDebounce = false
+				-- 2. Fix: Pass player instead of character
+				myButton:interact(player)
+				print("Button pressed by", player.Name)
+
+				-- 3. Check for unlock (using the shadowed controller)
+				-- We cast to 'any' or check if the method exists to satisfy Strict Mode
+				local locked = lockedDoorController :: any
+				if locked.unlock and locked.isLocked then
+					locked:unlock()
+					print("Door is now UNLOCKED")
+				end
+
+				task.wait(1)
+				buttonDebounce = false
+			end
+		end
 	end)
 end
 
 -- Repeat the same logic for the normal door safely
--- if normalDoorController then
--- 	if normalDoorController.unlock then
--- 		task.delay(10, function()
--- 			normalDoorController:unlock()
--- 		end)
--- 	end
--- end
+if normalDoorController then
+	if normalDoorController.unlock then
+		task.delay(10, function()
+			normalDoorController:unlock()
+		end)
+	end
+end
