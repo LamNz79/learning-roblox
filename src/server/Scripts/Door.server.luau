@@ -7,6 +7,7 @@ local ButtonBase = require(ReplicatedStorage.Shared.Modules.ButtonBase)
 local DoorMath = require(ReplicatedStorage.Shared.Math:WaitForChild("DoorMath"))
 local DoorTween = require(ReplicatedStorage.Shared.Utils:WaitForChild("DoorTween"))
 local DoorBase = require(ReplicatedStorage.Shared.Modules:WaitForChild("DoorBase"))
+local DoorTypes = require(ReplicatedStorage.Shared.Types.DoorTypes)
 local LockedDoorController = require(ServerScriptService.Server.Components:WaitForChild("LockedDoor"))
 
 local lockedDoorModel = workspace:WaitForChild("LockedDoorModel")
@@ -14,7 +15,7 @@ local bigRedButtonModel = workspace:WaitForChild("BigRedButton")
 local redButton = bigRedButtonModel:WaitForChild("Button") :: BasePart
 
 -- Type alias for cleaner code
-type DoorControllerType = DoorBase.DoorBaseObject | LockedDoorController.LockedDoorObject
+type DoorControllerType = DoorTypes.DoorBaseObject | LockedDoorController.LockedDoorObject
 
 -- Type guard function to check if controller is a LockedDoorObject
 local function isLockedDoor(controller: DoorControllerType): boolean
@@ -44,7 +45,7 @@ local function setupDoor(doorModel: Model): DoorControllerType?
 		doorPart:PivotTo(currentCFrame)
 	end
 
-	local tweenInfo = TweenInfo.new(1.5, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out)
+	local tweenInfo = TweenInfo.new(DoorConstants.TWEEN_DURATION, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out)
 	local tweenConfig: DoorTween.DoorTweenConfig = {
 		initialValue = DoorConstants.CLOSE_ANGLE,
 		tweenInfo = tweenInfo,

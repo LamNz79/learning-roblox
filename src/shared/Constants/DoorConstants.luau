@@ -5,6 +5,7 @@ local DoorConstants = {
 	CLOSE_ANGLE = 0,
 	TWEEN_TIME = 0.5,
 	SPIN_EXTRA = 0,
+	TWEEN_DURATION = 1.5,
 }
 
 return table.freeze(DoorConstants) -- Use freeze so other scripts can't change them

@@ -1,7 +1,8 @@
 --!strict
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local DoorTypes = require(ReplicatedStorage.Shared.Types.DoorTypes)
 local DoorBase = require(game.ReplicatedStorage.Shared.Modules.DoorBase)
-
-export type LockedDoorObject = DoorBase.DoorBaseObject & {
+export type LockedDoorObject = DoorTypes.DoorBaseObject & {
 	isLocked: boolean,
 	unlock: (self: LockedDoorObject) -> (),
 }
@@ -10,7 +11,7 @@ local LockedDoor = {}
 LockedDoor.__index = LockedDoor
 setmetatable(LockedDoor, DoorBase)
 
-function LockedDoor.new(config: DoorBase.DoorConfig): LockedDoorObject
+function LockedDoor.new(config: DoorTypes.DoorConfig): LockedDoorObject
 	local self = DoorBase.new(config) :: any
 	self.isLocked = true
 

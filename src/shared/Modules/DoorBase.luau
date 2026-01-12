@@ -1,38 +1,17 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local DoorTypes = require(game.ReplicatedStorage.Shared.Types.DoorTypes)
 local DoorBase = {}
 DoorBase.__index = DoorBase
 local Ragdoll = require(ReplicatedStorage.Shared.Utils.Ragdoll)
-local DoorTween = require(game.ReplicatedStorage.Shared.Utils.DoorTween)
-export type DoorConfig = {
-	closedCFrame: number,
-	openCFrame: number,
-	tween: DoorTween.DoorTweenObject,
-}
-export type DoorBaseObject = {
-	--Props
-	closedCFrame: CFrame,
-	openCFrame: CFrame,
-	tween: DoorTween.DoorTweenObject,
-	isAnimating: boolean,
-	isOpen: boolean,
-	--Methods
-	toggle: (self: DoorBaseObject, player: Player) -> (),
-	handleTouch: (
-		self: DoorBaseObject,
-		otherPart: BasePart,
-		hingePosition: Vector3,
-		smashForce: number
-	) -> (),
-}
 
-function DoorBase.new(config: DoorConfig): DoorBaseObject
+function DoorBase.new(config: DoorTypes.DoorConfig): DoorTypes.DoorBaseObject
 	local self = setmetatable({}, DoorBase) :: any
 	self.closedCFrame = config.closedCFrame
 	self.openCFrame = config.openCFrame
 	self.tween = config.tween
 	self.isOpen = false
 	self.isAnimating = false
-	return self :: DoorBaseObject
+	return self :: DoorTypes.DoorBaseObject
 end
 
 function DoorBase:toggle(player)
