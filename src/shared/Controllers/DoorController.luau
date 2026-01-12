@@ -3,7 +3,11 @@ local DoorController = {}
 DoorController.__index = DoorController
 local Ragdoll = require(ReplicatedStorage.Shared.Utils.Ragdoll)
 local DoorTween = require(game.ReplicatedStorage.Shared.Utils.doorTween)
-
+export type DoorConfig = {
+	closedCFrame: number,
+	openCFrame: number,
+	tween: DoorTween.DoorTweenObject,
+}
 export type DoorControllerObject = {
 	--Props
 	closedCFrame: CFrame,
@@ -13,17 +17,22 @@ export type DoorControllerObject = {
 	isOpen: boolean,
 	--Methods
 	toggle: (self: DoorControllerObject, player: Player) -> (),
-	handleTouch: (self: DoorControllerObject, otherPart: BasePart, hingePosition: Vector3, smashForce: number) -> (),
+	handleTouch: (
+		self: DoorControllerObject,
+		otherPart: BasePart,
+		hingePosition: Vector3,
+		smashForce: number
+	) -> (),
 }
 
-function DoorController.new(config): DoorControllerObject
-	local self = setmetatable({}, DoorController)
+function DoorController.new(config: DoorConfig): DoorControllerObject
+	local self = setmetatable({}, DoorController) :: any
 	self.closedCFrame = config.closedCFrame
 	self.openCFrame = config.openCFrame
 	self.tween = config.tween
 	self.isOpen = false
 	self.isAnimating = false
-	return (self :: any) :: DoorControllerObject
+	return self :: DoorControllerObject
 end
 
 function DoorController:toggle(player)

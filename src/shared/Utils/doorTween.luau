@@ -2,6 +2,11 @@ local TweenService = game:GetService("TweenService")
 
 local DoorTween = {}
 DoorTween.__index = DoorTween
+export type DoorTweenConfig = {
+	initialValue: number,
+	tweenInfo: TweenInfo,
+	updateCallback: (number) -> (),
+}
 
 export type DoorTweenObject = {
 	-- Params
@@ -14,8 +19,8 @@ export type DoorTweenObject = {
 }
 
 -- Changed: Now accepts an initial number value and a callback function
-function DoorTween.new(params: DoorTweenObject): DoorTweenObject
-	local self = setmetatable({}, DoorTween)
+function DoorTween.new(params: DoorTweenConfig): DoorTweenObject
+	local self = setmetatable({}, DoorTween) :: any
 
 	-- We use a NumberValue instead of CFrameValue to support values > 360
 	self.value = Instance.new("NumberValue")
@@ -30,7 +35,7 @@ function DoorTween.new(params: DoorTweenObject): DoorTweenObject
 	self.tweenInfo = params.tweenInfo
 	self.currentTween = nil
 
-	return (self :: any) :: DoorTweenObject
+	return self :: DoorTweenObject
 end
 
 function DoorTween:play(targetValue: number)

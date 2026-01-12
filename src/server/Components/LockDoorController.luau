@@ -10,13 +10,13 @@ local LockedDoor = {}
 LockedDoor.__index = LockedDoor
 setmetatable(LockedDoor, DoorController)
 
-function LockedDoor.new(config): LockedDoorObject
+function LockedDoor.new(config: DoorController.DoorConfig): LockedDoorObject
 	local self = DoorController.new(config) :: any
 	self.isLocked = true
 
 	setmetatable(self, LockedDoor)
 
-	return (self :: any) :: LockedDoorObject
+	return self :: LockedDoorObject
 end
 
 function LockedDoor:toggle(player: Player)
@@ -24,6 +24,7 @@ function LockedDoor:toggle(player: Player)
 		print("This door is locked! Cannot toggle")
 		return
 	end
+
 	DoorController.toggle(self, player)
 end
 
