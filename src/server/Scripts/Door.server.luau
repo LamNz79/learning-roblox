@@ -3,7 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
 local DoorConstants = require(ReplicatedStorage.Shared.Constants.DoorConstants)
-local ButtonController = require(ReplicatedStorage.Shared.Modules.ButtonController)
+local ButtonBase = require(ReplicatedStorage.Shared.Modules.ButtonBase)
 local DoorMath = require(ReplicatedStorage.Shared.Math:WaitForChild("DoorMath"))
 local DoorTween = require(ReplicatedStorage.Shared.Utils:WaitForChild("DoorTween"))
 local DoorBase = require(ReplicatedStorage.Shared.Modules:WaitForChild("DoorBase"))
@@ -84,7 +84,7 @@ local function setupDoor(doorModel: Model): DoorControllerType?
 end
 
 local lockedDoorController = setupDoor(lockedDoorModel)
-local myButton = ButtonController.new(bigRedButtonModel)
+local myButton = ButtonBase.new(bigRedButtonModel)
 
 -- Guard clause: early return if controller doesn't exist
 if not lockedDoorController then

@@ -1,19 +1,19 @@
 --!strict
-local ButtonController = {}
-ButtonController.__index = ButtonController
+local ButtonBase = {}
+ButtonBase.__index = ButtonBase
 export type ButtonControllerObject = {
 	isClicked: boolean,
 	model: Model,
 	--Methods
 	interact: (self: ButtonControllerObject, player: Player) -> (),
 }
-function ButtonController.new(buttonModel: Model)
-	local self = setmetatable({}, ButtonController)
+function ButtonBase.new(buttonModel: Model)
+	local self = setmetatable({}, ButtonBase)
 	self.isClicked = false
 	self.model = buttonModel
 	return (self :: any) :: ButtonControllerObject
 end
-function ButtonController.interact(self: ButtonControllerObject, player)
+function ButtonBase.interact(self: ButtonControllerObject, player)
 	self.isClicked = not self.isClicked
 	if self.isClicked then
 		print(`{player.Name} just press this big red button`)
@@ -22,4 +22,4 @@ function ButtonController.interact(self: ButtonControllerObject, player)
 		self.model:ScaleTo(1.0)
 	end
 end
-return ButtonController
+return ButtonBase
