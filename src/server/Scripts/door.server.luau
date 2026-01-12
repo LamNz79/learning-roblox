@@ -2,28 +2,27 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
-local Shared = ReplicatedStorage:WaitForChild("Shared")
-local Server = ServerScriptService:WaitForChild("Server")
-
+local DoorConstants = require(ReplicatedStorage.Shared.Constants.DoorConstants)
 local ButtonController = require(ReplicatedStorage.Shared.Controllers.ButtonController)
-local DoorMathModule = require(Shared.Math:WaitForChild("doorMath"))
-local DoorTweenModule = require(Shared.Utils:WaitForChild("doorTween"))
-local DoorControllerModule = require(Shared.Controllers:WaitForChild("DoorController"))
-local LockedDoorControllerModule = require(Server.Components:WaitForChild("LockDoorController"))
+local DoorMath = require(ReplicatedStorage.Shared.Math:WaitForChild("doorMath"))
+local DoorTween = require(ReplicatedStorage.Shared.Utils:WaitForChild("doorTween"))
+local DoorController = require(ReplicatedStorage.Shared.Controllers:WaitForChild("DoorController"))
+local LockedDoorController = require(ServerScriptService.Server.Components:WaitForChild("LockDoorController"))
 
-local DoorMath = DoorMathModule :: typeof(require(game.ReplicatedStorage.Shared.Math.doorMath))
-local DoorTween = DoorTweenModule :: typeof(require(game.ReplicatedStorage.Shared.Utils.doorTween))
-local DoorController = DoorControllerModule :: typeof(require(game.ReplicatedStorage.Shared.Controllers.DoorController))
-local LockedDoorController =
-	LockedDoorControllerModule :: typeof(require(game.ServerScriptService.Server.Components.LockDoorController))
+local lockedDoorModel = workspace:WaitForChild("LockedDoorModel")
+local bigRedButtonModel = workspace:WaitForChild("BigRedButton")
+local redButton = bigRedButtonModel:WaitForChild("Button") :: BasePart
 
-local SMASH_FORCE = 10
-local CLOSED_ANGLE = 0
-local OPEN_ANGLE = 160
-local SPIN_EXTRA = 0
+-- Type alias for cleaner code
+type DoorControllerType = DoorController.DoorControllerObject | LockedDoorController.LockedDoorObject
+
+-- Type guard function to check if controller is a LockedDoorObject
+local function isLockedDoor(controller: DoorControllerType): boolean
+	return (controller :: any).isLocked ~= nil
+end
 
 -- Function to set up a door
-local function setupDoor(doorModel: Model)
+local function setupDoor(doorModel: Model): DoorControllerType?
 	local doorPart = doorModel.PrimaryPart
 
 	if not doorPart then
@@ -46,20 +45,26 @@ local function setupDoor(doorModel: Model)
 	end
 
 	local tweenInfo = TweenInfo.new(1.5, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out)
-	local tween = DoorTween.new(CLOSED_ANGLE, tweenInfo, updateDoor)
-	local controller
+	local tweenConfig: DoorTween.DoorTweenConfig = {
+		initialValue = DoorConstants.CLOSE_ANGLE,
+		tweenInfo = tweenInfo,
+		updateCallback = updateDoor,
+	}
+
+	local tween = DoorTween.new(tweenConfig)
+	local controller: DoorControllerType
 
 	if isLocked then
 		controller = LockedDoorController.new({
-			closedCFrame = CLOSED_ANGLE,
-			openCFrame = OPEN_ANGLE + SPIN_EXTRA,
+			closedCFrame = DoorConstants.CLOSE_ANGLE,
+			openCFrame = DoorConstants.OPEN_ANGLE + DoorConstants.SPIN_EXTRA,
 			tween = tween,
 		})
 		print(doorModel.Name .. " - Created LOCKED door controller")
 	else
 		controller = DoorController.new({
-			closedCFrame = CLOSED_ANGLE,
-			openCFrame = OPEN_ANGLE + SPIN_EXTRA,
+			closedCFrame = DoorConstants.CLOSE_ANGLE,
+			openCFrame = DoorConstants.OPEN_ANGLE + DoorConstants.SPIN_EXTRA,
 			tween = tween,
 		})
 		print(doorModel.Name .. " - Created regular door controller")
@@ -67,7 +72,7 @@ local function setupDoor(doorModel: Model)
 
 	-- Connect the Touched event
 	doorPart.Touched:Connect(function(otherPart)
-		controller:handleTouch(otherPart, doorHinge.Position, SMASH_FORCE)
+		controller:handleTouch(otherPart, doorHinge.Position, DoorConstants.SMASH_FORCE)
 	end)
 
 	-- Connect the ProximityPrompt
@@ -78,55 +83,58 @@ local function setupDoor(doorModel: Model)
 	return controller
 end
 
-local normalDoorModel = workspace:WaitForChild("DoorModel")
-local lockedDoorModel = workspace:WaitForChild("LockedDoorModel")
-local bigRedButtonModel = workspace:WaitForChild("BigRedButton")
-local redButton = bigRedButtonModel:WaitForChild("Button")
-local normalDoorController = setupDoor(normalDoorModel)
-
 local lockedDoorController = setupDoor(lockedDoorModel)
 local myButton = ButtonController.new(bigRedButtonModel)
 
+-- Guard clause: early return if controller doesn't exist
+if not lockedDoorController then
+	warn("Failed to setup locked door controller")
+	return
+end
+
+-- Type-safe check and cast
+if not isLockedDoor(lockedDoorController) then
+	warn("Door controller is not a locked door")
+	return
+end
+
+-- Now we can safely cast to LockedDoorObject
+local typedLockedController = lockedDoorController :: LockedDoorController.LockedDoorObject
+
 local buttonDebounce = false
 
-if lockedDoorController then
-	redButton.Touched:Connect(function(otherPart)
-		local character = otherPart.Parent
-		if character and character:IsA("Model") then
-			local humanoid = character:FindFirstChildOfClass("Humanoid")
-			local player = game.Players:GetPlayerFromCharacter(character)
+redButton.Touched:Connect(function(otherPart)
+	local character = otherPart.Parent
 
-			if not humanoid or not player then
-				return
-			end
-
-			if not buttonDebounce then
-				buttonDebounce = true
-
-				-- 2. Fix: Pass player instead of character
-				myButton:interact(player)
-				print("Button pressed by", player.Name)
-
-				-- 3. Check for unlock (using the shadowed controller)
-				-- We cast to 'any' or check if the method exists to satisfy Strict Mode
-				local locked = lockedDoorController :: any
-				if locked.unlock and locked.isLocked then
-					locked:unlock()
-					print("Door is now UNLOCKED")
-				end
-
-				task.wait(1)
-				buttonDebounce = false
-			end
-		end
-	end)
-end
-
--- Repeat the same logic for the normal door safely
-if normalDoorController then
-	if normalDoorController.unlock then
-		task.delay(10, function()
-			normalDoorController:unlock()
-		end)
+	-- Guard clause: early return if not a character
+	if not character or not character:IsA("Model") then
+		return
 	end
-end
+
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	local player = game.Players:GetPlayerFromCharacter(character)
+
+	-- Guard clause: early return if missing humanoid or player
+	if not humanoid or not player then
+		return
+	end
+
+	-- Guard clause: debounce check
+	if buttonDebounce then
+		return
+	end
+
+	buttonDebounce = true
+
+	myButton:interact(player)
+	print("Button pressed by", player.Name)
+
+	-- Now we can safely call unlock without type casting
+	if typedLockedController.isLocked then
+		typedLockedController:unlock()
+		print("Door is now UNLOCKED")
+	end
+
+	task.wait(1)
+	buttonDebounce = false
+end)
