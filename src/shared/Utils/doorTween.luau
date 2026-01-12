@@ -4,26 +4,30 @@ local DoorTween = {}
 DoorTween.__index = DoorTween
 
 export type DoorTweenObject = {
+	-- Params
+	initialValue: number,
+	tweenInfo: TweenInfo,
+	-- Methods
+	updateCallback: (number) -> (),
 	play: (self: DoorTweenObject, targetValue: number) -> (),
 	Completed: RBXScriptSignal,
-	-- Add other internal properties if you want them visible, but 'play' is the important one
 }
 
 -- Changed: Now accepts an initial number value and a callback function
-function DoorTween.new(initialValue: number, tweenInfo: TweenInfo, updateCallback: (number) -> ()): DoorTweenObject
+function DoorTween.new(params: DoorTweenObject): DoorTweenObject
 	local self = setmetatable({}, DoorTween)
 
 	-- We use a NumberValue instead of CFrameValue to support values > 360
 	self.value = Instance.new("NumberValue")
-	self.value.Value = initialValue
-	self.tweenInfo = tweenInfo
-	self.currentTween = TweenService:Create(self.value, self.tweenInfo, { Value = initialValue })
+	self.value.Value = params.initialValue
+	self.tweenInfo = params.tweenInfo
+	self.currentTween = TweenService:Create(self.value, self.tweenInfo, { Value = params.initialValue })
 	-- Connect the callback: this runs every frame the tween updates
 	self.value.Changed:Connect(function(newValue)
-		updateCallback(newValue)
+		params.updateCallback(newValue)
 	end)
 
-	self.tweenInfo = tweenInfo
+	self.tweenInfo = params.tweenInfo
 	self.currentTween = nil
 
 	return (self :: any) :: DoorTweenObject
