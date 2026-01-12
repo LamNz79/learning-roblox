@@ -1,17 +1,17 @@
 --!strict
-local DoorController = require(game.ReplicatedStorage.Shared.Controllers.DoorController)
+local DoorBase = require(game.ReplicatedStorage.Shared.Modules.DoorBase)
 
-export type LockedDoorObject = DoorController.DoorControllerObject & {
+export type LockedDoorObject = DoorBase.DoorBaseObject & {
 	isLocked: boolean,
 	unlock: (self: LockedDoorObject) -> (),
 }
 
 local LockedDoor = {}
 LockedDoor.__index = LockedDoor
-setmetatable(LockedDoor, DoorController)
+setmetatable(LockedDoor, DoorBase)
 
-function LockedDoor.new(config: DoorController.DoorConfig): LockedDoorObject
-	local self = DoorController.new(config) :: any
+function LockedDoor.new(config: DoorBase.DoorConfig): LockedDoorObject
+	local self = DoorBase.new(config) :: any
 	self.isLocked = true
 
 	setmetatable(self, LockedDoor)
@@ -25,7 +25,7 @@ function LockedDoor:toggle(player: Player)
 		return
 	end
 
-	DoorController.toggle(self, player)
+	DoorBase.toggle(self, player)
 end
 
 function LockedDoor.unlock(self: LockedDoorObject)
