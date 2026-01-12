@@ -7,18 +7,18 @@ export type DoorConfig = {
 	tween: DoorTween.DoorTweenObject,
 }
 
-export type DoorBaseObject = {
+export type DoorControllerObject = {
 	closedCFrame: number,
 	openCFrame: number,
 	tween: DoorTween.DoorTweenObject,
 	isAnimating: boolean,
 	isOpen: boolean,
-	toggle: (self: DoorBaseObject, player: Player) -> (),
-	handleTouch: (self: DoorBaseObject, otherPart: BasePart, hingePosition: Vector3, smashForce: number) -> (),
+	toggle: (self: DoorControllerObject, player: Player) -> (),
+	handleTouch: (self: DoorControllerObject, otherPart: BasePart, hingePosition: Vector3, smashForce: number) -> (),
 }
 
 -- Use '&' to extend the base type for the locked version
-export type LockedDoorObject = DoorBaseObject & {
+export type LockedDoorObject = DoorControllerObject & {
 	isLocked: boolean,
 	unlock: (self: LockedDoorObject) -> (),
 }

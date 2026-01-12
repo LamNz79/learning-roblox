@@ -4,14 +4,14 @@ local DoorBase = {}
 DoorBase.__index = DoorBase
 local Ragdoll = require(ReplicatedStorage.Shared.Utils.Ragdoll)
 
-function DoorBase.new(config: DoorTypes.DoorConfig): DoorTypes.DoorBaseObject
+function DoorBase.new(config: DoorTypes.DoorConfig): DoorTypes.DoorControllerObject
 	local self = setmetatable({}, DoorBase) :: any
 	self.closedCFrame = config.closedCFrame
 	self.openCFrame = config.openCFrame
 	self.tween = config.tween
 	self.isOpen = false
 	self.isAnimating = false
-	return self :: DoorTypes.DoorBaseObject
+	return self :: DoorTypes.DoorControllerObject
 end
 
 function DoorBase:toggle(player)

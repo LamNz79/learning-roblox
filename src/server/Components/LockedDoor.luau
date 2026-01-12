@@ -2,7 +2,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local DoorTypes = require(ReplicatedStorage.Shared.Types.DoorTypes)
 local DoorBase = require(game.ReplicatedStorage.Shared.Modules.DoorBase)
-export type LockedDoorObject = DoorTypes.DoorBaseObject & {
+export type LockedDoorObject = DoorTypes.DoorControllerObject & {
 	isLocked: boolean,
 	unlock: (self: LockedDoorObject) -> (),
 }

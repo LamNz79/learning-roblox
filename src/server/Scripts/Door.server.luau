@@ -15,7 +15,7 @@ local bigRedButtonModel = workspace:WaitForChild("BigRedButton")
 local redButton = bigRedButtonModel:WaitForChild("Button") :: BasePart
 
 -- Type alias for cleaner code
-type DoorControllerType = DoorTypes.DoorBaseObject | LockedDoorController.LockedDoorObject
+type DoorControllerType = DoorTypes.DoorControllerObject | LockedDoorController.LockedDoorObject
 
 -- Type guard function to check if controller is a LockedDoorObject
 local function isLockedDoor(controller: DoorControllerType): boolean
