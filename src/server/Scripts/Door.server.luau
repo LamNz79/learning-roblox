@@ -3,18 +3,18 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
 local DoorConstants = require(ReplicatedStorage.Shared.Constants.DoorConstants)
-local ButtonController = require(ReplicatedStorage.Shared.Controllers.ButtonController)
+local ButtonController = require(ReplicatedStorage.Shared.Modules.ButtonController)
 local DoorMath = require(ReplicatedStorage.Shared.Math:WaitForChild("DoorMath"))
 local DoorTween = require(ReplicatedStorage.Shared.Utils:WaitForChild("DoorTween"))
-local DoorController = require(ReplicatedStorage.Shared.Controllers:WaitForChild("DoorController"))
-local LockedDoorController = require(ServerScriptService.Server.Components:WaitForChild("LockDoorController"))
+local DoorBase = require(ReplicatedStorage.Shared.Modules:WaitForChild("DoorBase"))
+local LockedDoorController = require(ServerScriptService.Server.Components:WaitForChild("LockedDoor"))
 
 local lockedDoorModel = workspace:WaitForChild("LockedDoorModel")
 local bigRedButtonModel = workspace:WaitForChild("BigRedButton")
 local redButton = bigRedButtonModel:WaitForChild("Button") :: BasePart
 
 -- Type alias for cleaner code
-type DoorControllerType = DoorController.DoorControllerObject | LockedDoorController.LockedDoorObject
+type DoorControllerType = DoorBase.DoorBaseObject | LockedDoorController.LockedDoorObject
 
 -- Type guard function to check if controller is a LockedDoorObject
 local function isLockedDoor(controller: DoorControllerType): boolean
@@ -62,7 +62,7 @@ local function setupDoor(doorModel: Model): DoorControllerType?
 		})
 		print(doorModel.Name .. " - Created LOCKED door controller")
 	else
-		controller = DoorController.new({
+		controller = DoorBase.new({
 			closedCFrame = DoorConstants.CLOSE_ANGLE,
 			openCFrame = DoorConstants.OPEN_ANGLE + DoorConstants.SPIN_EXTRA,
 			tween = tween,
