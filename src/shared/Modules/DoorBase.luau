@@ -1,14 +1,14 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local DoorController = {}
-DoorController.__index = DoorController
+local DoorBase = {}
+DoorBase.__index = DoorBase
 local Ragdoll = require(ReplicatedStorage.Shared.Utils.Ragdoll)
-local DoorTween = require(game.ReplicatedStorage.Shared.Utils.doorTween)
+local DoorTween = require(game.ReplicatedStorage.Shared.Utils.DoorTween)
 export type DoorConfig = {
 	closedCFrame: number,
 	openCFrame: number,
 	tween: DoorTween.DoorTweenObject,
 }
-export type DoorControllerObject = {
+export type DoorBaseObject = {
 	--Props
 	closedCFrame: CFrame,
 	openCFrame: CFrame,
@@ -16,26 +16,26 @@ export type DoorControllerObject = {
 	isAnimating: boolean,
 	isOpen: boolean,
 	--Methods
-	toggle: (self: DoorControllerObject, player: Player) -> (),
+	toggle: (self: DoorBaseObject, player: Player) -> (),
 	handleTouch: (
-		self: DoorControllerObject,
+		self: DoorBaseObject,
 		otherPart: BasePart,
 		hingePosition: Vector3,
 		smashForce: number
 	) -> (),
 }
 
-function DoorController.new(config: DoorConfig): DoorControllerObject
-	local self = setmetatable({}, DoorController) :: any
+function DoorBase.new(config: DoorConfig): DoorBaseObject
+	local self = setmetatable({}, DoorBase) :: any
 	self.closedCFrame = config.closedCFrame
 	self.openCFrame = config.openCFrame
 	self.tween = config.tween
 	self.isOpen = false
 	self.isAnimating = false
-	return self :: DoorControllerObject
+	return self :: DoorBaseObject
 end
 
-function DoorController:toggle(player)
+function DoorBase:toggle(player)
 	if self.isAnimating then
 		return
 	end
@@ -58,7 +58,7 @@ function DoorController:toggle(player)
 	end
 end
 
-function DoorController:handleTouch(otherPart: BasePart, hingePosition: Vector3, smashForce: number)
+function DoorBase:handleTouch(otherPart: BasePart, hingePosition: Vector3, smashForce: number)
 	local character = otherPart.Parent
 	if character and character:IsA("Model") then
 		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
@@ -90,4 +90,4 @@ function DoorController:handleTouch(otherPart: BasePart, hingePosition: Vector3,
 	end
 end
 
-return DoorController
+return DoorBase
