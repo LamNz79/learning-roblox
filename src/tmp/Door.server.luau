@@ -4,8 +4,8 @@ local ServerScriptService = game:GetService("ServerScriptService")
 
 local DoorConstants = require(ReplicatedStorage.Shared.Constants.DoorConstants)
 local ButtonController = require(ReplicatedStorage.Shared.Controllers.ButtonController)
-local DoorMath = require(ReplicatedStorage.Shared.Math:WaitForChild("doorMath"))
-local DoorTween = require(ReplicatedStorage.Shared.Utils:WaitForChild("doorTween"))
+local DoorMath = require(ReplicatedStorage.Shared.Math:WaitForChild("DoorMath"))
+local DoorTween = require(ReplicatedStorage.Shared.Utils:WaitForChild("DoorTween"))
 local DoorController = require(ReplicatedStorage.Shared.Controllers:WaitForChild("DoorController"))
 local LockedDoorController = require(ServerScriptService.Server.Components:WaitForChild("LockDoorController"))
 
