@@ -33,5 +33,9 @@ function LockedDoor.unlock(self: LockedDoorObject)
 	self.isLocked = false
 	print("Door unlocked!")
 end
+function LockedDoor.lock(self: LockedDoorObject)
+	self.isLocked = true
+	print("Door locked!")
+end
 
 return LockedDoor
