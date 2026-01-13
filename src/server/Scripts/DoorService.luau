@@ -19,7 +19,7 @@ local function setupDoor(doorModel: Model): DoorTypes.DoorControllerObject?
 		return nil
 	end
 
-	local sound = doorPart:FindFirstChild("HeavenlySong") :: Sound?
+	local sound = doorModel:FindFirstChild("HeavenlySong") :: Sound?
 	local isHeaven = doorModel:GetAttribute("IsHeaven") or false
 	local isLocked = doorModel:GetAttribute("IsLocked") or false
 	local doorHinge = doorModel:WaitForChild("doorHinge") :: BasePart
@@ -94,6 +94,7 @@ function DoorService.init()
 		end
 
 		local controller = setupDoor(doorModel)
+		print(doorModel)
 		if controller then
 			DoorRegistry.ActiveDoors[doorModel] = controller
 

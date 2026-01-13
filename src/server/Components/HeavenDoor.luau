@@ -15,7 +15,8 @@ function HeavenDoor.new(config: DoorTypes.DoorConfig, model: Model, sound: Sound
 	local self = DoorBase.new(config) :: any
 	self.model = model
 	self.sound = sound
-
+	self.sound.RollOffMaxDistance = 100
+	self.sound.Volume = 1
 	setmetatable(self, HeavenDoor)
 
 	return self :: HeavenDoorObject
@@ -27,6 +28,7 @@ function HeavenDoor:toggle(player: Player)
 	end
 	if self.sound and not self.isOpen then
 		self.sound:Play()
+		print("🎶 Playing Divine Music!")
 	end
 	DoorBase.toggle(self, player)
 end
