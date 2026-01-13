@@ -3,6 +3,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- Import our Service, Registry, and Button module
+local EnemyService = require(script.Scripts.EnemyService)
 local DoorService = require(ServerScriptService.Server.Scripts.DoorService)
 local DoorRegistry = require(ServerScriptService.Server.Components.DoorRegistry)
 local ButtonBase = require(ReplicatedStorage.Shared.Modules.ButtonBase)
@@ -38,11 +39,16 @@ redButton.Touched:Connect(function(otherPart)
 		if lockedController.isLocked then
 			lockedController:unlock()
 			print("Button successfully unlocked the door!")
+		else
+			lockedController:lock()
+			print("Button successfully locked the door!")
 		end
 	end
 
 	task.wait(1)
 	buttonDebounce = false
 end)
+
+EnemyService.init()
 
 print("Server: All systems initialized.")
