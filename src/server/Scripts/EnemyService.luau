@@ -33,6 +33,9 @@ function EnemyService.spawnEnemy()
 end
 
 function EnemyService.init()
+	workspace:WaitForChild("Map")
+	ServerStorage:WaitForChild("Entities"):WaitForChild("EnemyTemplate")
+	task.wait(1)
 	task.spawn(function()
 		while true do
 			EnemyService.spawnEnemy()
