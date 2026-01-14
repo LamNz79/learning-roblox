@@ -3,8 +3,8 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- Import our Service, Registry, and Button module
-local EnemyService = require(script.Scripts.EnemyService)
-local DoorService = require(ServerScriptService.Server.Scripts.DoorService)
+local EnemyService = require(script.Services.EnemyService)
+local DoorService = require(ServerScriptService.Server.Services.DoorService)
 local DoorRegistry = require(ServerScriptService.Server.Components.DoorRegistry)
 local ButtonBase = require(ReplicatedStorage.Shared.Modules.ButtonBase)
 
