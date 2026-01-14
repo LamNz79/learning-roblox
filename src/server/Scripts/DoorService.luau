@@ -74,27 +74,13 @@ local function setupDoor(doorModel: Model): DoorTypes.DoorControllerObject?
 end
 
 function DoorService.init()
-	-- print("DoorService: Initializing...")
-	-- local normalDoorModel = workspace:WaitForChild("DoorModel")
-	-- local normalController = setupDoor(normalDoorModel)
-	-- if normalController then
-	-- 	DoorRegistry.ActiveDoors[normalDoorModel] = normalController
-	-- end
-	-- -- For your manual testing:
-	-- local lockedDoorModel = workspace:WaitForChild("LockedDoorModel")
-	-- local lockedController = setupDoor(lockedDoorModel)
-	-- if lockedController then
-	-- 	DoorRegistry.ActiveDoors[lockedDoorModel] = lockedController
-	-- end
-
-	-- Automated registration for all doors [cite: 4]
+	print("DoorService: Initializing...")
 	for _, doorModel in ipairs(workspace:GetDescendants()) do
 		if not doorModel:IsA("Model") or not doorModel:GetAttribute("IsDoor") then
 			continue
 		end
 
 		local controller = setupDoor(doorModel)
-		print(doorModel)
 		if controller then
 			DoorRegistry.ActiveDoors[doorModel] = controller
 

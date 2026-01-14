@@ -18,6 +18,12 @@
         "$path": "ServerPackages"
       }
     },
+    "ServerStorage": {
+      "$className": "ServerStorage",
+      "Entities": {
+        "$path": "src/ServerStorage/Entities"
+      }
+    },
     "StarterPlayer": {
       "StarterPlayerScripts": {
         "Client": {
@@ -28,6 +34,10 @@
     "Workspace": {
       "$properties": {
         "FilteringEnabled": true
+      },
+      "$className": "Workspace",
+      "Map": {
+        "$path": "src/Map"
       },
       "Baseplate": {
         "$className": "Part",

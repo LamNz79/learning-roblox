@@ -16,7 +16,6 @@ end
 function ButtonBase.interact(self: ButtonControllerObject, player)
 	self.isClicked = not self.isClicked
 	if self.isClicked then
-		print(`{player.Name} just press this big red button`)
 		self.model:ScaleTo(0.5)
 	else
 		self.model:ScaleTo(1.0)

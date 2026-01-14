@@ -5,6 +5,7 @@ local DoorBase = require(game.ReplicatedStorage.Shared.Modules.DoorBase)
 export type LockedDoorObject = DoorTypes.DoorControllerObject & {
 	isLocked: boolean,
 	unlock: (self: LockedDoorObject) -> (),
+	lock: (self: LockedDoorObject) -> (),
 }
 
 local LockedDoor = {}
@@ -32,6 +33,10 @@ end
 function LockedDoor.unlock(self: LockedDoorObject)
 	self.isLocked = false
 	print("Door unlocked!")
+end
+function LockedDoor.lock(self: LockedDoorObject)
+	self.isLocked = true
+	print("Door locked!")
 end
 
 return LockedDoor
