@@ -25,15 +25,12 @@ function DoorBase:toggle(player)
 		self.tween.Completed:Once(function()
 			self.isAnimating = false
 		end)
-		print(player.Name, " closed the door")
 	else
 		self.tween:play(self.openCFrame)
 		self.isOpen = true
 		self.tween.Completed:Once(function()
 			self.isAnimating = false
 		end)
-
-		print(player.Name, " opened the door (SPIN!)")
 	end
 end
 

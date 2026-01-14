@@ -38,10 +38,8 @@ redButton.Touched:Connect(function(otherPart)
 		local lockedController = controller :: any
 		if lockedController.isLocked then
 			lockedController:unlock()
-			print("Button successfully unlocked the door!")
 		else
 			lockedController:lock()
-			print("Button successfully locked the door!")
 		end
 	end
 
