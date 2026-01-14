@@ -1,9 +1,15 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
+local EnemyConfig = require(ReplicatedStorage.Shared.Constants.EnemyConfig)
 local DoorTween = require(ReplicatedStorage.Shared.Utils.DoorTween)
 local EnemyService = {}
 
-function EnemyService.spawnEnemy()
+function EnemyService.spawnEnemy(enemyType: string)
+	local config = EnemyConfig[enemyType]
+	if not config then
+		warn("Enemy type not found in config: " .. enemyType)
+		return
+	end
 	local template = ServerStorage.Entities:FindFirstChild("EnemyTemplate")
 
 	if not template then
@@ -21,24 +27,24 @@ function EnemyService.spawnEnemy()
 
 	local movement = DoorTween.new({
 		initialValue = 0,
-		tweenInfo = TweenInfo.new(10, Enum.EasingStyle.Linear),
+		tweenInfo = TweenInfo.new(config.Speed, Enum.EasingStyle.Linear),
 		updateCallback = moveEnemy,
 	})
 
 	movement:play(1)
 
-	task.delay(10, function()
+	task.delay(config.Speed, function()
 		enemy:Destroy()
 	end)
 end
 
-function EnemyService.init()
+function EnemyService.init(enemyType: string)
 	workspace:WaitForChild("Map")
 	ServerStorage:WaitForChild("Entities"):WaitForChild("EnemyTemplate")
 	task.wait(1)
 	task.spawn(function()
 		while true do
-			EnemyService.spawnEnemy()
+			EnemyService.spawnEnemy(enemyType)
 			task.wait(5)
 		end
 	end)

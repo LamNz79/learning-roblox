@@ -46,7 +46,7 @@ redButton.Touched:Connect(function(otherPart)
 	task.wait(1)
 	buttonDebounce = false
 end)
-
-EnemyService.init()
+local enemyType = "BasicEnemy"
+EnemyService.init(enemyType)
 
 print("Server: All systems initialized.")
