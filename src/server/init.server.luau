@@ -4,20 +4,22 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- Import our Service, Registry, and Button module
 local EnemyService = require(script.Services.EnemyService)
+local GameStateService = require(script.Services.GameStateService)
+local WaveService = require(script.Services.WaveService)
 local DoorService = require(ServerScriptService.Server.Services.DoorService)
 local DoorRegistry = require(ServerScriptService.Server.Components.DoorRegistry)
 local ButtonBase = require(ReplicatedStorage.Shared.Modules.ButtonBase)
-
--- 1. START THE DOOR SYSTEM FIRST
-DoorService.init()
-
--- 2. SETUP THE MANUAL BUTTON LOGIC
 local bigRedButtonModel = workspace:WaitForChild("BigRedButton")
 local redButton = bigRedButtonModel:WaitForChild("Button") :: BasePart
 local lockedDoorModel = workspace:WaitForChild("LockedDoorModel")
-
 local myButton = ButtonBase.new(bigRedButtonModel)
 local buttonDebounce = false
+local enemyType = "BasicEnemy"
+
+GameStateService.init()
+DoorService.init()
+EnemyService.init(enemyType)
+WaveService.init()
 
 redButton.Touched:Connect(function(otherPart)
 	local character = otherPart.Parent
@@ -46,7 +48,5 @@ redButton.Touched:Connect(function(otherPart)
 	task.wait(1)
 	buttonDebounce = false
 end)
-local enemyType = "BasicEnemy"
-EnemyService.init(enemyType)
 
 print("Server: All systems initialized.")
