@@ -17,11 +17,16 @@ function EnemyService.spawnEnemy(enemyType: string)
 	end
 
 	local enemy = template:Clone() :: BasePart
-	enemy.Parent = workspace
+
 	local spawnPart = workspace.Map.SpawnPoint
 	local goalPart = workspace.Map.Goal
+	enemy.Position = spawnPart.Position
+	enemy.Parent = workspace
 
 	local function moveEnemy(fraction: number)
+		if not enemy or not enemy.Parent then
+			return
+		end
 		enemy.Position = spawnPart.Position:Lerp(goalPart.Position, fraction)
 	end
 
@@ -34,20 +39,16 @@ function EnemyService.spawnEnemy(enemyType: string)
 	movement:play(1)
 
 	task.delay(config.Speed, function()
-		enemy:Destroy()
+		if enemy and enemy.Parent then
+			enemy:Destroy()
+		end
 	end)
 end
 
 function EnemyService.init(enemyType: string)
 	workspace:WaitForChild("Map")
 	ServerStorage:WaitForChild("Entities"):WaitForChild("EnemyTemplate")
-	task.wait(1)
-	task.spawn(function()
-		while true do
-			EnemyService.spawnEnemy(enemyType)
-			task.wait(5)
-		end
-	end)
+	print("EnemyService: Ready to receive spawn commands.")
 end
 
 return EnemyService
